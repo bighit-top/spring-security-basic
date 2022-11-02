@@ -32,7 +32,8 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
      * oauth2 login 후 userRequest 데이터에 대한 후 처리
      * userRequest 정보: 구글 로그인 버튼 -> 구글 로그인 창 -> 로그인 완료 -> code를 리턴(OAuth-Client 라이브러리) -> AccessToken 요청
      *  - code를 받아서 accessToken을 응답 받는 객체
-     * loadUser함수: userRequest 정보로 회원프로필을 받아줌
+     * loadUser함수: userRequest 데이터에 대한 후처리 함수
+     * 함수 종료시 @AuthenticationPrincipal 어노테이션이 만들어짐
      */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -43,7 +44,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         log.info("OAuth2UserRequest.userRequest: {}", userRequest.getClientRegistration()); //어떤 OAuth 인지 확인 가능
         log.info("OAuth2UserRequest.userRequest: {}", userRequest.getAccessToken());
         //token을 통해 응답받은 회원정보
-        log.info("oAuth2User: {}", oAuth2User);
+        log.info("oAuth2User: {}", oAuth2User );
 
 //        //회원가입
 //        String provider = userRequest.getClientRegistration().getClientId(); //구글

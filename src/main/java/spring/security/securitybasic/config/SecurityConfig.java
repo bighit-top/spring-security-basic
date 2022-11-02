@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import spring.security.securitybasic.config.oauth.PrincipalOauth2UserService;
 
@@ -17,12 +16,6 @@ public class SecurityConfig {
 
     @Autowired
     private PrincipalOauth2UserService principalOauth2UserService;
-
-    /* password 암호화 */
-//    @Bean
-//    public BCryptPasswordEncoder encodePassword() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     /* spring security filter 설정 */
     @Bean
@@ -42,7 +35,7 @@ public class SecurityConfig {
                         .and() //OAuth2
                         .oauth2Login()
                         .loginPage("/loginForm") //구글 로그인이 완료된 뒤의 후처리가 필요
-                                                //1.코드받기(인증), 2.엑세스토큰(권한), 3.사용자프로필 정보를 가져오고, 4.그 정보를 토대로 회원가입을 자동으로 진행시키기도 함
+                                                //1 .코드받기(인증), 2.엑세스토큰(권한), 3.사용자프로필 정보를 가져오고, 4.그 정보를 토대로 회원가입을 자동으로 진행시키기도 함
                                                 // 쇼핑몰 : 구글(이메일, 전화번호, 이름, 아이디) -> 집주소 추가 정보 필요
                                                 // 백화점몰 : vip등급, 일반등금 등 추가 정보 필요
                                                 // 추가 정보가 필요 없으면 자동 회원가입 처리 가능
