@@ -6,11 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import spring.security.securitybasic.config.auth.PrincipalDetails;
 import spring.security.securitybasic.model.User;
 import spring.security.securitybasic.repository.UserRepository;
 
@@ -25,6 +30,38 @@ public class IndexController {
     @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /** Authentication 객체가 가질 수 있는 2가지 타입 테스트 - 일반 로그인
+     * - Authentication
+     * - @AuthenticationPrincipal PrincipalDetails : 어노테이션
+     */
+    @GetMapping("/test/login")
+    public @ResponseBody String testLogin(
+            Authentication authentication,
+            @AuthenticationPrincipal PrincipalDetails userDetails) {
+        log.info("/test/login");
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        log.info("authentication: {}", ((PrincipalDetails) authentication.getPrincipal()).getUser());
+
+        log.info("userDetails: {}", userDetails.getUser());
+        return "일반 세션 정보 확인";
+    }
+
+    /** Authentication 객체가 가질 수 있는 2가지 타입 테스트 - OAuth2 로그인
+     * - Authentication
+     * - @AuthenticationPrincipal OAuth2User : 어노테이션
+     */
+    @GetMapping("/test/oauth/login")
+    public @ResponseBody String testOAuthLogin(
+            Authentication authentication,
+            @AuthenticationPrincipal OAuth2User oauth) {
+        log.info("/test/oauth/login");
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        log.info("authentication: {}", oAuth2User.getAttributes());
+
+        log.info("oauth: {}", oauth.getAttributes());
+        return "OAuth 세션 정보 확인";
+    }
+
     @GetMapping({"", "/"})
     public String index() {
         //머스테치 기본 폴더: src/main/resources
@@ -34,7 +71,8 @@ public class IndexController {
     }
 
     @GetMapping("/user")
-    public @ResponseBody String user() {
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        log.info("PrincipalDetails: {}", principalDetails.getUser());
         return "user";
     }
 
